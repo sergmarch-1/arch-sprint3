@@ -16,30 +16,21 @@
 - БД содержит две таблицы: heating_systems и temperature_sensors, данные в которых обновляются через REST API запросы
 
 3. Определение доменов и границы контекстов
-3.1. Домен Devices
+3.1. Домен Devices (системы отопления)
     Поддомен: сенсоры температуры
-3.2. Домен Services
-    Поддомен: сервис управления отоплением
+3.2. Домен Services (сервис управления отоплением и проверки температуры)
 
 4. Проблемы монолитного решения
-…
-…
-…
-Если вы считаете, что текущее решение не вызывает проблем, аргументируйте свою позицию.
+
+Текущее решение позволяет выполнять функции, ожидаемые от исходной системы. Но в случае перехода на целевую систему, необходимо пересмотреть архитектуру в пользу асинхронных методов взаимодействия и микросервисов, дабы обеспечить максимально быстрый отклик на запросы (такие как открытие ворот, включение/выключение света и т.д.) даже при высокой нагрузке. 
 
 5. Визуализация контекста системы — диаграмма С4
-Добавьте сюда диаграмму контекста в модели C4.
-
-Чтобы добавить ссылку в файл Readme.md, нужно использовать синтаксис Markdown. Это делают так:
 
 ```markdown
 [Диаграмма контекста исходной системы](https://www.plantuml.com/plantuml/duml/jPDHYzD04CVVyodMw4CFhWsAJqBXlFP1f69jA_SODidGBcvsrzrDIn51wwE7VWI_md5OJx6dNs7pZPnDsbXH42hseUdCxFpct_zaJuobsXOv9wVKi9ICQQuu13UOI7cH0PbPgyozAD9qqPaoEokIme1EfR0WR2ULUQGu5HxGDZRZB8bwTzj3dthwQ13br5ZGc8fxs46P0DrHU3O8Xg2D52qFEoQX--2-kQ_bkRl2vwMxA5TkxUFmcDmoIZCBtL1L7NTyYZFnh1lkfDMo_gebuJBP2HhGfIpiOsMP5AQJPpTdB8EudX3N0zjIjyrCBdxDrj_XKJ1U8YYFJsKXCggNhVGs_eq7G2qJKr8N3rKQ7f4N0S5Furbh0KbCbS8HPv2G-qfnbb8lFiJKGpgdVbO69jNTsiihTD4x-jwjonLnt_zexplYhZ5uNQxAL-x2VQvBvJcfwXliMcF1fzxWyxfywxuG_B5sd_3iXhXBuZuYSEFM_sKfwFBBhSyj0y98_wPC85UWgIqqa76LFDpc7Jo3EKjXkp_Ihw9_e3PhwoUjB45idrgQKEEPuL0QEzKmVZB0QE_jpirp7XlGSz2824R0jtVZv-eDs0dLKx1x7eHUzMGo7F-cjn5PAVObv7fi0smyHMIlq1h4Fla0OEDZe_GGNZpQ8thxHa0p4vrLrm-Fd838iEi7)
 ```
 
 
-```markdown
-[Текст ссылки](URL)
-```
 # Задание 2. Проектирование микросервисной архитектуры
 
 В этом задании вам нужно предоставить только диаграммы в модели C4. Мы не просим вас отдельно описывать получившиеся микросервисы и то, как вы определили взаимодействия между компонентами To-Be системы. Если вы правильно подготовите диаграммы C4, они и так это покажут.
@@ -53,34 +44,23 @@
 **Диаграммы компонентов (Components)**
 
 ```markdown
-[KAFKA](URL)
+[Диаграмма компонентов целевой системы](https://www.plantuml.com/plantuml/dpng/pPH1InnB483lyolgxUN1mtKlxoGYYWOZCI1kn8FAKjDTJZVRCzFfwd5OGlvxgdl6p2uaR0W8Ud2fwg-glww1EkM88NQrA_wnZNAT9Z0nUZvQB0BsXvMDfYixfg3Q9b8J3rLRBxp39jNCEMfdoyNv__ERbBhxVBseaIC5IQtEfG9jG-7Gf_xo9_KsRc1sJ-MPzpD01lGUZe_b_ya9V2i0_eExgsBuPGgGUeJMEGf3ygoBPYi9nKEmbOaCof1QFsL8pkiQ6mtNRMML83MkYS4sDbfq4EXhHnoVYk-JqDdD5LnYf1utevLTLKdB9grVtlmd5x-Wirek620-0D-LphAnJGLgP6qJM_Y4psiSczmI-xPX6hfiMsOg-wtnMQPMXdPDuQVXbzPRnNAj8OohiVy1kEGvXHL6cY9DBrPDyQlLYYF6ZYN6cWA-dhy-K_GwoVCGteHMTqh2RTUFuY3FpBOcYYnJI5TDyvIHEznGA1va15G5uTi6UXlDpZXSdkL8ZXuCFhIAcEM64TCsTMT8uYHW7lXZvxM4B3FLbdU--3r6OKBsw__A3qG4bZ4Grh2KOWflQtoTlcFsTUzmdfSfd-sgzsAthNT1gM0GrEeD1G_0OD0z1eBK9w1AVNPbRZzSN2q7bL9KH1fBvCdb7DbCEv0X0KCyF6CxiwGmf2vIAjrI_2i3S5cVZVLSf1KxdvyCI-q8Pan9EUrq61ymA_9Pej9g4MPSLBJBoPC0WJqf-smLnBHmjcjrAQLvwM4SI_bHZyul5a4XcrdXuaG7GltO1ni9MazXq9uLPZ_IxqUqsejK-xiKUTicoaMXa3UDoXFf6gioD9kGQZzYzYFzVaIhto6drEYkTZy0)
 ```
 
-
-```markdown
-[Heating Service](URL)
-```
-
-```markdown
-[Light Service](URL)
-```
-
-```markdown
-[Gate Service](URL)
-```
-
-```markdown
-[Watcher Service](URL)
-```
-
-```markdown
-[Device Gateway Service](URL)
-```
 
 **Диаграмма кода (Code)**
 
-Добавьте одну диаграмму или несколько.
+```markdown
+[Диаграмма кода компонента "Logic Layer" контейнера Heating](https://www.plantuml.com/plantuml/dpng/VL9Dgzim4BpxLwWvzGFR57hAwHNx4cZfAuxfiIZIlbXK7qQxSdcK_lUkC4gS47eocjaPQMRzX2GZ9MUhDyOhcpI8YMZ6VTj6-Riv6vhIAI545Jo1fqO5ryvM-gofaRGrfxRxL3zdQFpwfNKI2I93FpjMIECXDdFshofb9QBu_7p8J0pMGXH_AY4-ZEEX5nD8CluylBBU7VgC8qL6Rfc192NCh3L8Wf_ZfDVV4oJ8e0xfP45mg3FG4TmCaUSZREnKYf6J36e2dInKcLg2qMAEGG5Yjrg-VNSXaAtk3JSq4ztg-PZde__sydAF-EqDhrxzuAvxM8pAsh-bhkC07aFikB5hLnhoM2wf92wfxYBReAJj9S7HE11iIEEi-QYl5vGUrbLeeqX8HMQ1GfIkonuAZfVNIwqBkCaKmOK57X2Cg5_TxHRMoDNjpx7xk1DrpP-cUR_RDh4NAayemlygBj7sOf9OFO7NoTb_)
+```
+
+```markdown
+[Диаграмма кода компонента "API Layer" контейнера Watcher](https://www.plantuml.com/plantuml/dpng/RP5DwzD048Vl-HJh_wH86WHFFLNYfMYXqlOco6OpJORkIvoPhOVYTtUJa6wBFOIGPtPcdlnsmw99ehF5E_J6nXPKBpBmkgf8_rbrA7ri8WEPu0Myh4nmrM2r7tjAbjPYKzMVo_s8JhllbTCiG0dzgbE7HW-q6iRvXR6QMNtPRyS21Mk1rArGwYEsYk1t19Rjr_it3y4Rc855bkN8ZmWHLARJGOQCMpGPrzhq2O_y6jBSWO81vZeufttx_aFnjrZ43aAW7Vhk07G5gYs2bycFXHHFy4Gsxz16y0fp6qyOlIWJl8TK2Vw83aAKX-rJrdD3Mfrf6Fw37SZC3g8bycYwY7xJvujECTxk9fUH7CE0XhDU-jKs6g2KzXcxp9CWHxVm1xdOi25iu1YcKOjCJcsN7jt1Oo4s5hdFXIIvwActJs-gBAVNywMl5ODlMVrK10PIXbmy7yYThs_bnO1D0j7PVm00)
+```
+
 
 # Задание 3. Разработка ER-диаграммы
 
-Добавьте сюда ER-диаграмму. Она должна отражать ключевые сущности системы, их атрибуты и тип связей между ними.
+```markdown
+[ER Diagram](https://www.plantuml.com/plantuml/dpng/pLLDRzn63BthLx2wz0DTxwKdmJ0Is4PYr2s2k4OEiM5G8repi5OIXjIgHjF_tk7iA5eLwsvG840kYyNZu-CR3aTynO9UXasJVUTQqmmLWHNfkLYlFOudjHCxb0EJDrqhrCg9wJRhli5MSrOiLUFAzValgtSAtVvslTuW2_a0FPo737Gj-PDUzREGxUGPyjkWbWCog2oSdfuFBDs6_DaP_9K1_0GNj7M6EFnVhI9mCvHilEl5TMtsTpPBVQ3oTTz7CUpxe1L-FylSNiqAMahz-AvfoCyu3c9d7EP0EEO6s-gwgvq1hJcLVFtk2jwWq8ZFgQvxgBMmYuM_N7I6FN7VjKmHtw_rApu-8VpHzSvmBFQ4Z-6GfU-Uzjfb2UKXIU-fDgwsX_0QXGx0bJRzKC3WXZnEWNrxRmd5jNLqPYKOO_8gyjcPzgh1P_BPHzSArHxr1c5qOY6UxJxRMTM3JynKYA7tdI7cK27HAgVg32me58YMp1FV3Ns54j3tL3c-t_Vt0SNOD6lZ__87seeRyOGRk0d9vB-kuskzi-Yt-GRx-KRnwAx-LjpjsqkVZSNhhCnNDFepMFJLY9v0TJmQrLcQ-hqJz-XCh10TjV9us59wSSkw-rANs_0FmaUYJezEYVzvl1SKPydtbnTNDxj6bK6fGi4IUPOwHxQpYdwu6PGqOrFJbwY-bGXVAFnIFzAJWe-NVmhv5flxgKESZfM-SdlvwJ4UpcJnBoQ-dQxgXsJvnvXYnv0nNUEKatqVvgk97jcwdhEugJvzMgtETCyKnUqLv4mw3J6IPYFFOd3nbOyfkYB-XMS9N7px4xi_o8NJ4DKDK43U3sNZsDAoFhWM4BWdeoq6qRsHfsJDhSgYq1k5V8kDgtOpcJKo1I7tXDNTw9qGT3tvoE0yiySfut5APOvIwkCgElF7EFh6le1J5FfKbAWZLwGhZMU9lMRn2iQ9YmEUPvdslrYiLkL28yeSodn7q1sxYDVBk2LSvjjbVBbp8sDSCfRhUkUtChlHk9je2klP0ho0GWydQBhR0w8gffJnAACvogYFCrBJxJXT12G6mnruCkIsqpRWV7wHASDY0BDN8M_ODFy0)
+```

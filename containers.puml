@@ -1,0 +1,58 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include DEVICONS/angular.puml
+!include DEVICONS/java.puml
+!include FONTAWESOME/users.puml
+!include DEVICONS/redis.puml
+!include DEVICONS/aws.puml
+!include DEVICONS/compass.puml
+
+
+Person(user, "User", "«Smart House» system customer", $sprite="users")
+Container(app, "WEB \ Mobile Application", "angular", "UI", $sprite="angular")
+Container(api, "API Gateway","java", requests entry point, $sprite="java")
+Container(comm, "Command Service", "java", $sprite="java")
+Container(kafka, "Kafka", "java", "Message Broker", $sprite="java")
+ContainerDb(db, "REDIS DB", "Holds temporary (device states) and permanent data", $sprite="redis")
+System_Boundary(sl, "Service Layer", $link="https://github.com/plantuml-stdlib/C4-PlantUML") {
+    Container(heat_ms, "Heating Service", "Java", $descr="allows to monitor and set up temperature", $link="https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/LayoutOptions.md")
+	Container(light_ms, "Light Service", "Java", $descr="allows to control the light", $link="https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/LayoutOptions.md")
+	Container(gate_ms, "Gate Service", "Java", $descr="allows to control the gates", $link="https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/LayoutOptions.md")
+	Container(wtch_ms, "Watcher Service", "Java", $descr="provides access to surveillance cameras", $link="https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/LayoutOptions.md")
+	Container(device_ms, "Device Gateway Service", "Java", $descr="communicates with hardware", $link="https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/LayoutOptions.md")
+	Container(ns_ms, "Notification Service", "Java", $descr="sends notifications to user", $link="https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/LayoutOptions.md")
+	Container(event_ms, "Logging Service", "Java", $descr="logs everything", $link="https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/LayoutOptions.md")
+}
+
+
+System_Boundary(hl, "Hardware Layer", $link="https://github.com/plantuml-stdlib/C4-PlantUML") {
+    Container(tsens, "temperature sensors", $link="https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/LayoutOptions.md")
+	Container(cam, "cameras", $link="https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/LayoutOptions.md")
+	Container(rel, "relays", $link="https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/LayoutOptions.md")
+	Container(lsens, "light sensors", $link="https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/LayoutOptions.md")
+}    
+
+Container_Ext(str, "Streaming Service", $sprite="compass")
+Container_Ext(aws, "AWS Storage", $sprite="aws")
+
+
+Rel(user, app, "uses", "https")
+Rel(app, api, "sends requests for routing", "https")
+Rel_R(sl, db, "Reads/Writes")
+Rel(api, comm, "sends requests for validation\processing")
+Rel(comm, kafka, "publish validated requests in topics")
+Rel(kafka, light_ms, "sends messages to subscribers")
+Rel(kafka, gate_ms, "sends messages to subscribers")
+Rel(kafka, wtch_ms, "sends messages to subscribers")
+Rel(kafka, event_ms, "sends messages to subscribers")
+Rel(kafka, device_ms, "sends messages to subscribers")
+Rel(kafka, heat_ms, "sends messages to subscribers")
+Rel(kafka, ns_ms, "sends messages to subscribers")
+
+Rel(device_ms, hl, "sends a command via an appropriate protocol")
+Rel(wtch_ms, str, "sends stream parameters from camera")
+Rel(str, aws, "saves streams")
+@enduml

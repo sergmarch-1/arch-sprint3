@@ -1,0 +1,58 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include DEVICONS/angular.puml
+!include DEVICONS/java.puml
+!include FONTAWESOME/users.puml
+!include DEVICONS/redis.puml
+!include DEVICONS/aws.puml
+!include DEVICONS/compass.puml
+
+
+Container(kafka, "API Gateway", $sprite="java")
+ContainerDb(db, "REDIS DB", "Holds temporary (device states) and permanent data", $sprite="redis")
+System_Boundary(sl, "Command Service Components", $link="https://github.com/plantuml-stdlib/C4-PlantUML") {
+    Component(heat_ms, "Heating Controller", "Java", $descr="process heating control requests", $link="https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/LayoutOptions.md")
+	Component(light_ms, "Light Controller", "Java", $descr="process lights control requests", $link="https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/LayoutOptions.md")
+	Component(gate_ms, "Gate Controller", "Java", $descr="process gates control requests", $link="https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/LayoutOptions.md")
+	Component(wtch_ms, "Camera Controller", "Java", $descr="process camera requests", $link="https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/LayoutOptions.md")
+	Component(auth_ms, "Auth Controller", "Java", $descr="Validates user", $link="https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/LayoutOptions.md")
+Component(heat_lgc, "Logic Component", "Java", $descr="sends \ receives kafka messages within [heating_command] topic", $link="https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/LayoutOptions.md")
+Component(light_lgc, "Logic Component", "Java", $descr="sends \ receives kafka messages within [light_command] topic", $link="https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/LayoutOptions.md")
+Component(gate_lgc, "Logic Component", "Java", $descr="sends \ receives kafka messages within [gate_command] topic", $link="https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/LayoutOptions.md")
+Component(cam_lgc, "Logic Component", "Java", $descr="sends \ receives kafka messages within [camera_command] topic", $link="https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/LayoutOptions.md")
+}
+
+Container(broker, "Kafka", "Message Broker", $sprite="java")
+Container(ser, "Services Layer", $sprite="java")
+Container(dev, "Devices Layer", $sprite="compass")
+
+
+
+Rel_R(ser, db, "Reads/Writes")
+Rel(kafka, light_ms, "Makes API calls to")
+Rel(kafka, gate_ms, "Makes API calls to")
+Rel(kafka, wtch_ms, "Makes API calls to")
+Rel(kafka, heat_ms, "Makes API calls to")
+
+Rel(light_ms, light_lgc, "Sends request data for processing" )
+Rel(gate_ms, gate_lgc, "Sends request data for processing" )
+Rel(wtch_ms, cam_lgc, "Sends request data for processing" )
+Rel(heat_ms, heat_lgc, "Sends request data for processing" )
+
+Rel(light_lgc, broker, "publishes message into [light_command] topic")
+Rel(gate_lgc, broker, "publishes message into [gate_command] topic")
+Rel(cam_lgc, broker, "publishes message into [camera_command] topic")
+Rel(heat_lgc, broker, "publishes message into [heat_command] topic")
+
+Rel(broker, ser, "")
+Rel(ser, dev, "")
+
+Rel(heat_ms, auth_ms, "Uses")
+Rel(gate_ms, auth_ms, "Uses")
+Rel(wtch_ms, auth_ms, "Uses")
+Rel(light_ms, auth_ms, "Uses")
+@enduml

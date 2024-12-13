@@ -1,0 +1,48 @@
+@startuml
+
+entity "User" {
+  user_id INT
+  user_name TEXT
+  user_phone INT_10
+  user_email CHAR_10
+  subscription_type TEXT
+}
+
+entity "House" {
+  house_id INT
+  house_address TEXT
+  linked_devices LIST
+}
+
+entity "Device" {
+  device_id INT
+  device_type TEXT
+  device_name TEXT
+  install_date DATETIME
+  status BOOLEAN
+  serial_num CHAR_20
+}
+
+entity "Request" {
+  request_id INT
+  request_type INT
+  request_body TEXT
+}
+
+entity "Application" {
+  session_id INT
+  service_id INT
+  service_name TEXT
+  topic_id INT
+  user_info LIST
+  request_info LIST
+}
+
+"User" ||--o{ "House": "has"
+"House" ||--o{ "Device": "has"
+"User" ||--o{ "Request": "creates"
+"Application" ||--o{ "Request": "receives"
+"Application" ||--o{ "Device": "uses"
+"User" ||--|| "Application": "uses"
+
+@enduml
